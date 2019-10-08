@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/C0NKER/cool-compiler-base.svg?branch=master)](https://travis-ci.org/C0NKER/cool-compiler-base)
+
 # COOL: Proyecto de Compilación
 
 > Proyecto base para el compilador de 4to año en Ciencia de la Computación.
