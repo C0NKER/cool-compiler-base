@@ -8,4 +8,4 @@ install:
 # command to run tests
 script:
   - make -C src
-  - pytest -v --tb=short
+  - pytest tests -v --tb=short
