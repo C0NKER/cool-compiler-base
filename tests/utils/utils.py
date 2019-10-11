@@ -21,7 +21,7 @@ def first_error(compiler_output: str, error: str):
     assert line == oline and column == ocolumn and error_type == oerror_type,\
         UNEXPECTED_ERROR % (error_type, line, column, oerror_type, oline, ocolumn)
 
-def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str, cmp=first_error, timeout=10):
+def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str, cmp=first_error, timeout=100):
     try:
         sp = subprocess.run(['bash', compiler_path, cool_file_path], capture_output=True, timeout=timeout)
         return_code, output = sp.returncode, sp.stdout.decode().split('\n')
@@ -35,4 +35,5 @@ def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str
         cmp(output, fd.read())
         fd.close()      
     else:
+        print(return_code, output)
         assert return_code == 0, TEST_MUST_COMPILE % cool_file_path
