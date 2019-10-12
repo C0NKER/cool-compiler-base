@@ -6,3 +6,6 @@ main:
 clean:
 	rm -rf build/*
 
+test:
+	pytest ../tests -v --tb=short
+
