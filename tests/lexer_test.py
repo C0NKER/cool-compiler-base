@@ -2,7 +2,7 @@ import pytest
 import os
 from utils import compare_errors
 
-tests_dir = './tests/lexer/'
+tests_dir = __file__.rpartition('/')[0] + '/lexer/'
 tests = [(tests_dir + file) for file in os.listdir(tests_dir) if file.endswith('.cl')]
 
 @pytest.mark.lexer
