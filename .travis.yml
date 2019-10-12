@@ -4,8 +4,9 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - make -C src clean
 # command to run tests
 script:
-  - make -C src
-  - pytest tests -v --tb=short
+  - cd src
+  - make clean
+  - make
+  - make test
