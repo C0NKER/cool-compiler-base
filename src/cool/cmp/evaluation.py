@@ -15,7 +15,7 @@ def evaluate_reverse_parse(right_parse, operations, tokens):
             stack.append(token)
         elif operation == Action.REDUCE:
             production = next(right_parse)
-            head, body = production
+            _, body = production
             attributes = production.attributes
             assert all(rule is None for rule in attributes[1:]), 'There must be only synteticed attributes.'
             rule = attributes[0]
