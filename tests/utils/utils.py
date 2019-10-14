@@ -9,6 +9,7 @@ UNEXPECTED_ERROR = 'Se esperaba un %s en (%d, %d). Su error fue un %s en (%d, %d
 
 def first_error(compiler_output: str, error: str):
     line, column, error_type = error.split()
+    line, column = int(line), int(column)
 
     try:
         oerror, _ = compiler_output.split('\n')[2].split(':')
@@ -24,7 +25,7 @@ def first_error(compiler_output: str, error: str):
 def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str, cmp=first_error, timeout=100):
     try:
         sp = subprocess.run(['bash', compiler_path, cool_file_path], capture_output=True, timeout=timeout)
-        return_code, output = sp.returncode, sp.stdout.decode().split('\n')
+        return_code, output = sp.returncode, sp.stdout.decode()
     except TimeoutError:
         assert False, COMPILER_TIMEOUT
 
