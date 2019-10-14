@@ -1,3 +1,4 @@
+from .errors import *
 from .lexer import *
 from .parser import *
 from .format_visitor import FormatVisitor

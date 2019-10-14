@@ -1,7 +1,6 @@
-from .cmp import visitor, ErrorType, SemanticError
+from .errors import SemanticError, TypexError
+from .cmp import visitor, ErrorType, SemanticErrorException
 from .parser import ProgramNode, ClassDeclarationNode, AttrDeclarationNode, FuncDeclarationNode
-
-ERROR_ON = 'Ln %d, Col %d: '
 
 class TypeBuilder:
     def __init__(self, context, errors=[]):
@@ -54,8 +53,8 @@ class TypeBuilder:
             
         try:
             self.context.get_type('Main').get_method('main')
-        except SemanticError:
-            self.errors.append(ERROR_ON % (node.line, node.column) + 'The class "Main" and its method "main" are needed.')
+        except SemanticErrorException:
+            self.errors.append(SemanticError((node.line, node.column), 'La class "Main" y/o su metodo "main" no se encuentran.'))
             
     
     @visitor.when(ClassDeclarationNode)
@@ -67,8 +66,8 @@ class TypeBuilder:
             try:
                 parent_type = self.context.get_type(parent.lex)
                 self.current_type.set_parent(parent_type)
-            except SemanticError as ex:
-                self.errors.append(ERROR_ON % (parent.line, parent.column) + ex.text)
+            except SemanticErrorException as ex:
+                self.errors.append(TypexError((parent.line, parent.column), ex.text))
                 self.current_type.set_parent(self.object_type)
         else:
             self.current_type.set_parent(self.object_type)
@@ -80,14 +79,14 @@ class TypeBuilder:
     def visit(self, node):
         try:
             attr_type = self.context.get_type(node.type.lex)
-        except SemanticError as ex:
-            self.errors.append(ERROR_ON % (node.type.line, node.type.column) + ex.text)
+        except SemanticErrorException as ex:
+            self.errors.append(TypexError((node.type.line, node.type.column), ex.text))
             attr_type = ErrorType()
             
         try:
             self.current_type.define_attribute(node.id.lex, attr_type)
-        except SemanticError as ex:
-            self.errors.append(ERROR_ON % (node.line, node.column) + ex.text)
+        except SemanticErrorException as ex:
+            self.errors.append(SemanticError((node.line, node.column), ex.text))
         
     @visitor.when(FuncDeclarationNode)
     def visit(self, node):
@@ -95,8 +94,8 @@ class TypeBuilder:
         for idx, typex in node.params:
             try:
                 arg_type = self.context.get_type(typex.lex)
-            except SemanticError as ex:
-                self.errors.append(ERROR_ON % (typex.line, typex.column) + ex.text)
+            except SemanticErrorException as ex:
+                self.errors.append(TypexError((typex.line, typex.column), ex.text))
                 arg_type = ErrorType()
             # else:
             #     if isinstance(arg_type, SelfType):
@@ -108,11 +107,11 @@ class TypeBuilder:
         
         try:
             ret_type = self.context.get_type(node.type.lex)
-        except SemanticError as ex:
-            self.errors.append(ERROR_ON % (node.type.line, node.type.column) + ex.text)
+        except SemanticErrorException as ex:
+            self.errors.append(TypexError((node.type.line, node.type.column), ex.text))
             ret_type = ErrorType()
         
         try:
             self.current_type.define_method(node.id.lex, arg_names, arg_types, ret_type)
-        except SemanticError as ex:
-            self.errors.append(ERROR_ON % (node.line, node.column) + ex.text)
+        except SemanticErrorException as ex:
+            self.errors.append(SemanticError((node.line, node.column), ex.text))

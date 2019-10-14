@@ -1,5 +1,5 @@
 from queue import Queue
-from .pycompiler import Grammar, Item
+from .grammar import Grammar, Item
 from .automata import State
 from .utils import ContainerSet
 

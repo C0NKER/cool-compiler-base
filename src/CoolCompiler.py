@@ -1,25 +1,31 @@
-from cool import tokenizer
-from cool import CoolParser, CoolGrammar
+from cool import CompilerError, LexicographicError, SyntacticError, tokenizer
+from cool import CoolGrammar, CoolParser
 from cool.cmp import evaluate_reverse_parse, Token
 from cool import FormatVisitor, TypeCollector, TypeBuilder, TypeChecker
 
 import sys
 
 clfile = sys.argv[1]
+errors = []
 
 try:
     fd = open(clfile, 'r')
     text = fd.read()
     fd.close()
 except FileNotFoundError:
-    print('(0, 0) - CompilerError: El archivo', clfile, 'no se pudo encontrar.')
+    errors.append(CompilerError((0,0), 'El archivo ' + clfile + ' no se pudo encontrar.'))
+    print(errors[0])
     exit(1)
 
 # Lexer ...
-errors, tokens = tokenizer(text)
+terrors, tokens = tokenizer(text)
 
-if errors:
-    print('(', errors[0].lineno, ',', errors[0].lexpos, ') - LexicographicError: no se reconoce el token', errors[0].value)
+if terrors:
+    errors.append(
+        LexicographicError((terrors[0].lineno, terrors[0].lexpos), 
+            'No se reconoce el token ' + terrors[0].value)
+    )
+    print(errors[0])
     exit(1)
 
 tokens = [Token(t.value, CoolGrammar[t.type.lower()], t.lineno, t.lexpos) for t in tokens]
@@ -29,15 +35,14 @@ tokens.append(Token('$', CoolGrammar.EOF))
 parse, operations = CoolParser(tokens)
 
 if not operations:
-    print('(', parse.line, ',', parse.column, ') - SyntacticError: no se esperaba el token', parse.lex)
+    errors.append(SyntacticError((parse.line, parse.column), 'No se esperaba el token ' + parse.lex))
+    print(errors[0])
     exit(1)
 
 # Semantic ...
 ast = evaluate_reverse_parse(parse, operations, tokens)
 formatter = FormatVisitor()
 # tree = formatter.visit(ast)
-
-errors = []
 
 collector = TypeCollector(errors)
 collector.visit(ast)

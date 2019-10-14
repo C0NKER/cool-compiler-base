@@ -56,7 +56,7 @@ def t_BOOL(t):
 	return t
 
 def t_COMMENT(t):
-	# r'--[^\n]+\n|\(\*[^(\*\))]+\*\)'
+    # r'--[^\n]+\n|\(\*[^(\*\))]+\*\)'
     r'(\(\*(.|\s)*?\*\))|(--.*)'
     pass  # Discard comments
 
@@ -114,6 +114,7 @@ lex.lex()
 def tokenizer(code):
     line = 0
     endls = [-1] + [i for i, c in enumerate(code) if c == '\n']
+    lendls = len(endls)
 
     tokens = []
 
@@ -129,14 +130,14 @@ def tokenizer(code):
     # setting correct line and columns of tokens
     line = 0
     for token in tokens:
-        while token.lexpos > endls[line]: line += 1
+        while line < lendls and token.lexpos > endls[line]: line += 1
         token.lineno = line
         token.lexpos -= endls[line - 1]
 
     # setting correct line and columns of error tokens
     line = 0
     for token in errors:
-        while token.lexpos > endls[line]: line += 1
+        while line < lendls and token.lexpos > endls[line]: line += 1
         token.lineno = line
         token.lexpos -= endls[line - 1] 
     

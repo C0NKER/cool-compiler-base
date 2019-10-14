@@ -1,7 +1,6 @@
-from .cmp import visitor, Context, SemanticError
+from .errors import SemanticError
+from .cmp import visitor, Context, SemanticErrorException
 from .parser import ProgramNode, ClassDeclarationNode
-
-ERROR_ON = 'Ln %d, Col %d: '
 
 class TypeCollector(object):
     def __init__(self, errors=[]):
@@ -28,5 +27,5 @@ class TypeCollector(object):
     def visit(self, node):
         try:
             self.context.create_type(node.id.lex)
-        except SemanticError as ex:
-            self.errors.append(ERROR_ON % (node.line, node.column) + ex.text)
+        except SemanticErrorException as ex:
+            self.errors.append(SemanticError((node.line, node.column), ex.text))
