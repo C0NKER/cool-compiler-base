@@ -1,1 +1,1 @@
-1 74 LexicographicError
+(2, 10) - LexicographicError: ERROR "#" 

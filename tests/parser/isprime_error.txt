@@ -1,1 +1,1 @@
-21 15 SyntacticError
+(21, 15) - SyntacticError: Error at or near ')'

@@ -1,5 +1,4 @@
 "kjas\"lnnsdj\nfljrdsaf"
-#
 $
 $
 %
