@@ -5,6 +5,7 @@ from utils import compare_errors
 tests_dir = __file__.rpartition('/')[0] + '/semantic/'
 tests = [(tests_dir + file) for file in os.listdir(tests_dir) if file.endswith('.cl')]
 
+@pytest.mark.order3
 @pytest.mark.semantic
 @pytest.mark.error
 @pytest.mark.parametrize("cool_file", [])
