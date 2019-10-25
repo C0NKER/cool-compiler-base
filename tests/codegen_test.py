@@ -5,7 +5,7 @@ from utils import compare_errors
 tests_dir = __file__.rpartition('/')[0] + '/codegen/'
 tests = [(tests_dir + file) for file in os.listdir(tests_dir) if file.endswith('.cl')]
 
-@pytest.mark.order4
+@pytest.mark.run(order=4)
 @pytest.mark.lexer
 @pytest.mark.parser
 @pytest.mark.semantic
